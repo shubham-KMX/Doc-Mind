@@ -29,3 +29,6 @@ Thumbs.db
 *.pdf
 
 backup-repo.git/
+
+# Interview prep files (local only, not for repo)
+interview_*.txt
