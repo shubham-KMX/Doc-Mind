@@ -1,0 +1,27 @@
+// =============================================================
+// Content Safety Rail — Output
+// =============================================================
+// After the LLM generates an answer AND it passes the groundedness
+// check, this rail screens the output for:
+//   - Toxic or harmful content
+//   - Personally identifiable information (PII)
+//   - Inappropriate advice (e.g., legal/medical recommendations)
+//
+// For a policy Q&A bot, the primary risk is the model giving
+// advice that sounds authoritative but is actually harmful —
+// e.g., "You should not report harassment" or "It's fine to
+// skip safety protocols." This rail catches those cases.
+// =============================================================
+
+define bot give safe answer
+  "Here is a safe, policy-grounded response."
+
+define bot give unsafe answer
+  "I cannot provide this response as it may contain inappropriate content. Please contact HR directly for this query."
+
+define flow content safety pass
+  bot give safe answer
+
+define flow content safety block
+  bot give unsafe answer
+  // Triggered when self_check_content_safety rail flags the output

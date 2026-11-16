@@ -15,10 +15,10 @@ from pypdf import PdfReader
 
 try:
     from backend.config import CHROMA_COLLECTION_NAME, CHROMA_DB_PATH, RAG_MAX_CONTEXT_CHUNKS, RAG_SIMILARITY_THRESHOLD
-    from backend.llm_services.mistral_service import FALLBACK_RESPONSE, embed_documents, embed_query, generate_grounded_answer
+    from backend.llm_services.mistral_service import FALLBACK_RESPONSE, embed_documents, embed_query, generate_grounded_answer, generate_grounded_answer_guarded
 except ModuleNotFoundError:
     from config import CHROMA_COLLECTION_NAME, CHROMA_DB_PATH, RAG_MAX_CONTEXT_CHUNKS, RAG_SIMILARITY_THRESHOLD
-    from llm_services.mistral_service import FALLBACK_RESPONSE, embed_documents, embed_query, generate_grounded_answer
+    from llm_services.mistral_service import FALLBACK_RESPONSE, embed_documents, embed_query, generate_grounded_answer, generate_grounded_answer_guarded
 
 
 PDF_ALLOWED_CONTENT_TYPES = {"application/pdf"}
@@ -236,7 +236,9 @@ def answer_question_with_llm(question: str, matches: list[dict[str, Any]]) -> st
         return FALLBACK_RESPONSE
 
     context = matches[:RAG_MAX_CONTEXT_CHUNKS]
-    return generate_grounded_answer(question, context)
+    # Use NeMo Guardrails-protected generation (falls back to direct call
+    # if guardrails are disabled or fail to initialize)
+    return generate_grounded_answer_guarded(question, context)
 
 
 def run_tenant_rag_workflow(

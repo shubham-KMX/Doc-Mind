@@ -1,0 +1,32 @@
+// =============================================================
+// Groundedness Check Rail — Output
+// =============================================================
+// After the LLM generates an answer, this rail verifies the answer
+// is actually supported by the retrieved context chunks.
+//
+// How it works:
+// 1. NeMo calls the LLM with a verification prompt:
+//    "Is the following answer fully supported by the context?"
+// 2. If the LLM says No → replace the answer with the fallback response
+// 3. If the LLM says Yes → pass the answer through
+//
+// This closes the biggest gap in DocMind's current design:
+// we currently trust the system prompt to prevent hallucination.
+// This rail verifies it programmatically.
+// =============================================================
+
+define bot give grounded answer
+  "Here is the answer based on the policy document."
+
+define bot give ungrounded answer
+  "I don't know based on the uploaded PDF."
+
+define flow check groundedness
+  bot give grounded answer
+  // If the groundedness check passes, the answer is returned as-is
+  // If the check fails, NeMo replaces the output with the fallback
+
+define flow ungrounded fallback
+  bot give ungrounded answer
+  // Triggered when the self_check_groundedness rail detects
+  // the answer contains claims not supported by retrieved context

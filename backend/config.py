@@ -37,6 +37,13 @@ RAG_MAX_CONTEXT_CHUNKS = int(os.getenv("RAG_MAX_CONTEXT_CHUNKS", "4"))
 RAG_MAX_OUTPUT_TOKENS = int(os.getenv("RAG_MAX_OUTPUT_TOKENS", "256"))
 RAG_SIMILARITY_THRESHOLD = float(os.getenv("RAG_SIMILARITY_THRESHOLD", "0.25"))
 
+# NeMo Guardrails Configuration
+GUARDRAILS_ENABLED = os.getenv("GUARDRAILS_ENABLED", "true").lower() == "true"
+GUARDRAILS_CONFIG_DIR = os.getenv(
+    "GUARDRAILS_CONFIG_DIR",
+    str(BASE_DIR / "guardrails"),
+)
+
 # CORS Configuration
 raw_cors_origins = os.getenv(
 	"CORS_ALLOW_ORIGINS",

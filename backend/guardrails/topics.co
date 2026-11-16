@@ -1,0 +1,41 @@
+// =============================================================
+// Topic Control Rail — Input
+// =============================================================
+// Blocks questions that are not about company policy documents.
+// DocMind is a policy Q&A assistant, not a general chatbot.
+//
+// If the user asks about weather, coding, general knowledge, etc.
+// this rail intercepts and returns a refusal before any retrieval
+// or LLM generation happens — saving API cost and staying on-domain.
+// =============================================================
+
+define user ask about policy
+  "How many casual leaves do I get?"
+  "What is the notice period?"
+  "Can I carry forward my sick leaves?"
+  "What are the standard working hours?"
+  "How much is the health insurance coverage?"
+  "What is the overtime pay rate?"
+  "Tell me about the leave policy"
+  "What is the PF contribution percentage?"
+  "Can I work remotely?"
+  "What happens if I'm late to work?"
+
+define user ask off topic
+  "What's the weather today?"
+  "Write me a Python script"
+  "Tell me a joke"
+  "Who won the last election?"
+  "What is the capital of France?"
+  "How do I cook pasta?"
+  "Can you help me with my math homework?"
+  "Write a poem about the ocean"
+  "What movies are playing this weekend?"
+  "Tell me about the latest news"
+
+define bot refuse off topic
+  "I'm a company policy assistant. I can only answer questions about your organization's policies — leave, attendance, compensation, conduct, and separation. Please ask a policy-related question."
+
+define flow topic control
+  user ask off topic
+  bot refuse off topic

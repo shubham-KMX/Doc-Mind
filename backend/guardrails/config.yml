@@ -1,0 +1,42 @@
+"""
+NeMo Guardrails Configuration for DocMind
+==========================================
+This config sets up four rails around the LLM:
+
+  Input Rails (run before RAG retrieval):
+    1. Topic control      — block off-topic questions
+    2. Prompt injection    — block jailbreak attempts
+
+  Output Rails (run after LLM generation):
+    3. Groundedness check  — verify answer is supported by context
+    4. Content safety      — block harmful output
+
+The model is configured to use Groq's OpenAI-compatible endpoint so
+the same Groq API key and model used throughout DocMind work here too.
+"""
+
+models:
+  - type: main
+    engine: openai
+    model: ${GROQ_CHAT_MODEL}
+    api_key: ${GROQ_API_KEY}
+    base_url: "https://api.groq.com/openai/v1"
+    temperature: 0.0
+    max_tokens: 256
+
+rails:
+  # Input rails — intercept user messages before they reach the LLM
+  input:
+    flows:
+      - self check topic control
+      - self check prompt injection
+
+  # Output rails — intercept LLM output before returning to user
+  output:
+    flows:
+      - self check groundedness
+      - self check content safety
+
+  # Disable dialog rails — DocMind is single-turn Q&A, not multi-turn conversation
+  dialog:
+    flows: []

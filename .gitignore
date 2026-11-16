@@ -32,3 +32,8 @@ backup-repo.git/
 
 # Interview prep files (local only, not for repo)
 interview_*.txt
+project_description.txt
+
+# Evaluation artifacts (generated at runtime)
+evaluation/sample_policy.pdf
+evaluation/__pycache__/
